@@ -26,7 +26,7 @@ module.exports = function(conn) {
         }
 
         async loadServers() {
-            const serversResult = await conn.promise().query('SELECT ID FROM users_servers WHERE user_ID=?', [this.id]);
+            const serversResult = await conn.promise().query('SELECT * FROM users_servers WHERE user_ID=?', [this.id]);
             const permsResult = await conn.promise().query('SELECT * FROM user_permission WHERE user_ID=?', [this.id])
 
             this.servers = [];
@@ -35,6 +35,8 @@ module.exports = function(conn) {
                 for (var i = 0; i < serversResult[0].length; i++) {
                     const s = serversResult[0][i];
                     const server = await Server.build(s.ID);
+                    console.log(s);
+                    server.role = s.role;
                     this.servers.push(server);
                 }
             }

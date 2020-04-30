@@ -11,19 +11,20 @@ block content
                     h1 #{server.name}
                 div.row.justify-content-center
                     h4 #{server.ip}
-                div.row.justify-content-center
-                    button#showServerTokenButton.btn.btn-primary(type="button")
-                    span#serverToken #{server.token}
+                if (server.role === "owner")
+                    div.row.justify-content-center
+                        button#showServerTokenButton.btn.btn-primary.btn-sm(type="button") Show Server Token
+                        span#serverToken #{server.token}
                 div.row.justify-content-center.mt-4
                     table.table.table-striped.table-hover.border
                         thead.thead-dark
                             tr
                                 th(scope='col') Username
                                 th(scope='col') UUID
-                                th(scope='col') Online Status
+                                th(scope='col') Status
                         tbody#playerTableBody
                             each player in server.players
-                                tr(id=player.uuid, class=(player.status ? 'bg-success' : 'bg-warning'))
+                                tr(id=player.uuid, class=(player.status ? 'bg-success' : (player.banned == null ? 'bg-warning' : 'bg-danger')))
                                     td #{player.username}
                                     td #{player.uuid}
                                     if player.status == 1

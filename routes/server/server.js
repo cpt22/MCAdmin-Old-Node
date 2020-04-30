@@ -13,6 +13,7 @@ module.exports = function(app, router, conn, inc) {
 
         user.loadServers().then(function() {
             const server = user.getServer(serverID);
+            console.log(user);
             if (!server) {
                 res.status(404).render('404', {
                     title: 'MC Admin 404',

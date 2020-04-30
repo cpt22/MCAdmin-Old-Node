@@ -65,7 +65,6 @@ app.use((req, res, next) => {
     return next();
 });
 
-
 // Initialize ALL routes including subfolders
 
 function recursiveRoutes(folderName) {

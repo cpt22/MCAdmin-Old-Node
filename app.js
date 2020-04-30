@@ -15,7 +15,6 @@ const app = express();
 const util = require('./util')(conn);
 const path = require('path');
 const routes = require('./routes/index');
-console.log("BOTCH");
 
 redisClient.on('error', (err) => {
     console.log('Redis error: ', err);

@@ -9,35 +9,7 @@ module.exports = function(conn) {
             this.email = email;
             this.id = id;
             this.servers = [];
-        }
-
-        async loadServers() {
-            const result = await conn.promise().query('SELECT ID FROM users_servers WHERE user_ID=?', [this.id]);
-
-            this.servers = [];
-            if (result[0].length > 0) {
-                for (var i = 0; i < result[0].length; i++) {
-                    const s = result[0][i];
-                    const server = await Server.build(s.ID);
-                    this.servers.push(server);
-                }
-            }
-            return;
-        }
-
-        getServer(serverID) {
-            for (var s in servers) {
-                if (s.id === serverID)
-                    return s;
-            }
-        }
-
-        asJSONObject() {
-            return JSON.parse(JSON.stringify(this, null ,4));
-        }
-
-        asJSONString() {
-            return JSON.stringify(this, null ,4);
+            this.permissions = {};
         }
 
         static async build(username) {
@@ -52,6 +24,58 @@ module.exports = function(conn) {
                 return null;
             }
         }
+
+        async loadServers() {
+            const serversResult = await conn.promise().query('SELECT ID FROM users_servers WHERE user_ID=?', [this.id]);
+            const permsResult = await conn.promise().query('SELECT * FROM user_permission WHERE user_ID=?', [this.id])
+
+            this.servers = [];
+            this.permissions = {};
+            if (serversResult[0].length > 0) {
+                for (var i = 0; i < serversResult[0].length; i++) {
+                    const s = serversResult[0][i];
+                    const server = await Server.build(s.ID);
+                    this.servers.push(server);
+                }
+            }
+            if (permsResult[0].length > 0) {
+                for (var i = 0; i < permsResult[0].length; i++) {
+                    const p = permsResult[0][i];
+                    if (!this.permissions[p.server_ID]) {
+                        this.permissions[p.server_ID] = [];
+                    }
+                    this.permissions[p.server_ID].push(p.permission);
+                }
+            }
+            return;
+        }
+
+        getServer(serverID) {
+            for (var i = 0; i < this.servers.length; i++) {
+                var server = this.servers[i];
+                if (server.id == serverID) {
+                    return server;
+                }
+            }
+            console.log("wtf");
+            return null;
+        }
+
+        hasPermission(serverID, permission) {
+            const s = this.permissions[serverID];
+            if (s) {
+                return s.includes(permission);
+            }
+            return false;
+        }
+
+        asJSONObject() {
+            return JSON.parse(JSON.stringify(this, null ,4));
+        }
+
+        asJSONString() {
+            return JSON.stringify(this, null ,4);
+        }
     }
 
 
@@ -64,7 +88,7 @@ module.exports = function(conn) {
             this.ip = ip;
             this.players = [];
             this.id = id;
-            //this.playersOnline = 0;
+            this.playersOnline = 0;
         }
 
         async loadPlayers() {
@@ -76,18 +100,13 @@ module.exports = function(conn) {
                 this.playersOnline = 0;
                 for (var i = 0; i < result[0].length; i++) {
                     const player = result[0][i];
-                    //this.playersOnline+=player.status;
+                    if (player.status == '1') {
+                        this.playersOnline++;
+                    }
                     this.players.push(new Player(player.username, player.uuid, player.lastSeen, player.status, player.banned, this.id));
                 }
             }
             return;
-        }
-
-        getPlayer(identifier) {
-            for (var p in players) {
-                if (p.username === identifier || p.uuid === identifier)
-                    return p;
-            }
         }
 
         static async build(serverID) {
@@ -102,6 +121,33 @@ module.exports = function(conn) {
                 return null;
             }
         }
+
+        async loadServerToken() {
+            const result = await conn.promise().query('SELECT token FROM servers WHERE ID=?', [this.id]);
+
+            if (result[0].length == 1) {
+                const row = result[0][0];
+                this.token = row.token;
+            }
+            return;
+        }
+
+        getPlayer(identifier) {
+            for (var p in players) {
+                if (p.username === identifier || p.uuid === identifier)
+                    return p;
+            }
+        }
+
+        asJSONObject() {
+            return JSON.parse(JSON.stringify(this, null ,4));
+        }
+
+        asJSONString() {
+            return JSON.stringify(this, null ,4);
+        }
+
+
     }
 
     /**
@@ -119,6 +165,14 @@ module.exports = function(conn) {
 
         static async build(username) {
             return null;
+        }
+
+        asJSONObject() {
+            return JSON.parse(JSON.stringify(this, null ,4));
+        }
+
+        asJSONString() {
+            return JSON.stringify(this, null ,4);
         }
     }
 

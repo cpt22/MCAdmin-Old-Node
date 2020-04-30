@@ -1,5 +1,11 @@
 $(document).ready(function() {
-	loadPlayers()
+	//loadPlayers()
+	$('#serverToken').hide();
+
+	$('#showServerTokenButton').click(function() {
+		$(this).hide();
+		$('#serverToken').show();
+	});
 });
 
 function loadPlayers() {
@@ -14,7 +20,7 @@ function loadPlayers() {
   		  });
 }
 
-function processPlayer(player) {
+function processPlayer(player) {r
 	$("#playerTableBody").append('<tr id="' + player.uuid + '"></tr>');
 	$("#" + player.uuid).append('<td>' + player.username + '</td>');
 	$("#" + player.uuid).append('<td>' + player.uuid + '</td>');

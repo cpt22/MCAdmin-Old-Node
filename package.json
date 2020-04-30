@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cpt22/MCAdmin-Web-Node.git"
+    "url": "git+https://github.com/cpt22/MCAdmin-Node.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cpt22/MCAdmin-Web-Node/issues"
+    "url": "https://github.com/cpt22/MCAdmin-Node/issues"
   },
-  "homepage": "https://github.com/cpt22/MCAdmin-Web-Node#readme",
+  "homepage": "https://github.com/cpt22/MCAdmin-Node#readme",
   "dependencies": {
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",

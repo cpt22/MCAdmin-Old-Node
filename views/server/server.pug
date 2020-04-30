@@ -1,0 +1,33 @@
+extends ../layout
+
+block head
+    script(src=host+'/js/server.js' type='text/javascript')
+
+block content
+    div.container.mt-4
+        div.row.justify-content-center
+            div.col-md-8
+                div.row.justify-content-center
+                    h1 #{server.name}
+                div.row.justify-content-center
+                    h4 #{server.ip}
+                div.row.justify-content-center
+                    button#showServerTokenButton.btn.btn-primary(type="button")
+                    span#serverToken #{server.token}
+                div.row.justify-content-center.mt-4
+                    table.table.table-striped.table-hover.border
+                        thead.thead-dark
+                            tr
+                                th(scope='col') Username
+                                th(scope='col') UUID
+                                th(scope='col') Online Status
+                        tbody#playerTableBody
+                            each player in server.players
+                                tr(id=player.uuid, class=(player.status ? 'bg-success' : 'bg-warning'))
+                                    td #{player.username}
+                                    td #{player.uuid}
+                                    if player.status == 1
+                                        td Online
+                                    else
+                                        td Offline
+

@@ -1,6 +1,5 @@
-module.exports = function(conn, util) {
+module.exports = function(conn) {
     const crypto = require('crypto');
-
     class Tokenizer {
 
 
@@ -18,7 +17,6 @@ module.exports = function(conn, util) {
         }
 
         static async getUserFromToken(token) {
-            console.log(util.HOST);
             return null;
         }
     }

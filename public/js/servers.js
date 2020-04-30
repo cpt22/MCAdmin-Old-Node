@@ -4,29 +4,29 @@ $(document).ready(function() {
 	$("#cancelNewServerButton").hide();
 	
 	$("#newServerButton").click(function() {
-		if ($("#newServer").length) {	
-		} else {
-			$("#serverTableBody").append('<tr id="newServer"></tr');
+		if (!$("#newServer").length) {
+			$("#serverTableBody").append('<tr id="newServer"></tr>');
 			$("#newServer").append('<td><input type="text" name="serverName" class="form-control" id="newServerName"></td>');
 			$("#newServer").append('<td><input type="text" name="serverIP" class="form-control" id="newServerIP"></td>');
 			$("#newServer").append('<td></td>');
-		
-			$("#submitNewServerButton").show();
-			$("#cancelNewServerButton").show();
-			$(this).hide();
 		}
+		
+		$("#submitNewServerButton").show();
+		$("#cancelNewServerButton").show();
+		$(this).hide();
+
 	});
 	
 	$("#cancelNewServerButton").click(function() {
 		$(this).hide();
 		$("#submitNewServerButton").hide();
-		$("#serverTableBody").remove("#newServer");
+		$("#newServer").remove();
 		$("#newServerButton").show();
 	});
 });
 
 function loadServers() {
-	$.post("https://www.mcadmin.xyz/request/server/loadServers.php",
+	/*$.post("https://www.mcadmin.xyz/request/server/loadServers.php",
   		  {
   		  },
   		  function(data, status){
@@ -34,7 +34,7 @@ function loadServers() {
   			  console.log(obj);
   			  $("#serverTableBody").empty();
   			  obj.forEach(processServer);
-  		  });
+  		  });*/
 }
 
 function processServer(server) {

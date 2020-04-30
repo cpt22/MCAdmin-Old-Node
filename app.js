@@ -15,7 +15,7 @@ const app = express();
 const util = require('./util')(conn);
 const path = require('path');
 const routes = require('./routes/index');
-
+console.log("BOTCH");
 
 redisClient.on('error', (err) => {
     console.log('Redis error: ', err);
@@ -28,23 +28,6 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use((req, res, next) => {
-    if (req.cookies.user_sid && !req.session.user) {
-        res.clearCookie('user_sid');
-    }
-    next();
-});
-
-var sessionChecker = (req, res, next) => {
-    if (!req.session.user && req.cookies.logintoken) {
-        util.Tokenizer.getUserFromToken(req.cookies.logintoken).then(function(user) {
-
-        });
-    } else {
-        next();
-    }
-};
-
 app.use(session({
     secret: 'ThisIsHowYouUseRedisSessionStorage',
     name: '_MCADMIN',
@@ -53,6 +36,35 @@ app.use(session({
     cookie: { secure: false }, // Note that the cookie-parser module is no longer needed
     store: new redisStore({ host: 'localhost', port: 6379, client: redisClient, ttl: 86400 }),
 }));
+
+app.use((req, res, next) => {
+    if (req.cookies.user_sid && !req.session.user) {
+        res.clearCookie('user_sid');
+    }
+    next();
+});
+
+app.use((req, res, next) => {
+    if (!req.session.user && req.cookies.logintoken) {
+        util.Tokenizer.getUserFromToken(req.cookies.logintoken).then(function(user) {
+            req.session.user = user;
+        });
+    } else {
+        next();
+    }
+});
+
+app.use((req, res, next) => {
+    if(req.session.user && !util.users[req.session.id] ) {
+        util.users[req.session.id] = new util.User(req.session.user.username, req.session.user.email, req.session.user.id);
+
+        // Unsure if below is thread safe and doesnt result in race conditions
+        /*util.User.build(req.session.user.username).then(function(user) {
+            util.users[req.session.id] = user;
+        });*/
+    }
+    return next();
+});
 
 
 // Initialize ALL routes including subfolders

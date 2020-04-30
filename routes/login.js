@@ -34,6 +34,7 @@ module.exports = function(app, router, conn, inc) {
                     'SELECT * FROM users WHERE username=?',
                     [req.body.username],
                     function(err, result, fields) {
+                        console.log(err);
                         if (result.length == 1) {
                             Object.keys(result).forEach(function(key) {
                                 var row = result[key];

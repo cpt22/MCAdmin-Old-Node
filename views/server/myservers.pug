@@ -1,0 +1,25 @@
+extends ../layout
+
+
+
+block head
+    script(src=host+'/js/servers.js', type='text/javascript')
+
+block content
+    div.container.mt-5
+        table.table.table-striped.table-hover.border
+            thead.thead-dark
+                tr
+                    th(scope='col') Name
+                    th(scope='col') IP Address
+                    th(scope='col') Online Players
+            tbody#serverTableBody
+                each server in user.servers
+                    tr.server-row(id=server.id, onclick="window.location.href='" + host + "/server/server?s=" + server.id + "'")
+                        td #{server.name}
+                        td #{server.ip}
+                        td #{server.playersOnline}
+
+        button#newServerButton.btn.btn-primary.mr-2(type='button') New Server
+        button#submitNewServerButton.btn.btn-success.mr-2(type='button') Submit
+        button#cancelNewServerButton.btn.btn-danger.mr-2(type='button') Cancel
